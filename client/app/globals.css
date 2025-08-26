@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+	--color-background: #f8f3df;
+	--color-surface: #111827;
+	--color-primary: #FF2E80;
+	--color-secondary: #3f9494;
+	--color-accent: #14d1a8;
+	--color-border: rgba(0, 209, 209, 0.4);
+	--color-text: #f3f3f3;
+    --color-greeting: #000000;
+	--color-muted: #9CA3AF;
+	--color-success: #0a0e0c;
+	--color-warning: #F59E0B;
+	--color-danger: #EF4444;
+}
+
+
+@layer base {
+	body { @apply bg-background text-text; }
+}
+
+
+@layer components {
+	.btn { @apply px-4 py-2 rounded-xl font-medium transition shadow-glow; }
+	.btn-primary { @apply bg-primary hover:opacity-90 text-white; }
+	.btn-secondary { @apply bg-secondary text-black hover:opacity-90; }
+}
+
+
+@layer components {
+	.input { @apply w-full bg-white border border-border rounded-xl px-3 py-2 text-black outline-none; }
+}
+
+
+@layer components {
+		.card { @apply bg-surface border border-border rounded-xl p-4 shadow-glow; }
+	.modal { @apply bg-surface border border-border rounded-xl p-6 shadow-glow; }
+}
