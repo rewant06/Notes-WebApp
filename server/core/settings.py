@@ -7,9 +7,9 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 INSTALLED_APPS = [
-    "django.contrib.admin","django.contrib.auth","django.contrib.contenttypes",
+    "django.contrib.admin","django.contrib.auth","django.contrib.contenttypes",                                     
     "django.contrib.sessions","django.contrib.messages","django.contrib.staticfiles",
-    "accounts","notes"
+    "accounts","notes"                                                                                                                        
 ]
 
 MIDDLEWARE = [

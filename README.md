@@ -49,3 +49,9 @@ Troubleshooting
 - Port 3306 conflict: DB port is not exposed to host; backend connects over Docker network.
 - 403/CSRF: ensure http://localhost is in CSRF_TRUSTED_ORIGINS; Axios uses withCredentials.
 - Next dev over proxy: client binds 0.0.0.0 so Nginx can reach it.
+
+
+https://905418297704.signin.aws.amazon.com/console
+
+User name=NotesApp
+Console password=Hello@841211

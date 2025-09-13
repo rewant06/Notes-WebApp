@@ -1,0 +1,51 @@
+name: Deploy Backend to EC2 with ECR
+
+on: 
+    push:
+        branches:
+            -main
+        paths:
+            - 'server/**'
+
+jobs:
+    build-and-push-to-ecr:
+        runs-on: ununtu-latest
+        steps: 
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v2
+              with:
+                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+                 aws-region: ${{ secrets.AWS_REGION}}
+            
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+
+            - name: Build, tag, and push image to Amazon ECR
+              env: 
+                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry}}
+                IMAGE_TAG: ${{ github.sha}}
+              run: |
+                docker build -t $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG -f server/Dockerfile ./server
+                docker push $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG
+
+    deploy-to-ec2:
+        needs: build-and-push-to-ecr
+        runs-on: ununtu-latest
+        steps:
+            - name: Deploy to EC@
+              uses: appleboy/ssh-action@master
+              with: 
+                host: ${{ secrets.AWS_EC2_HOST}}
+                username: ${{ secrets.AWS_EC2_USERNAME}}
+                key: ${{ secrets.AWS_EC2_KEY}}
+                script: |
+                    cd ~/notes-webapp
+                    aws ecr get-login-password ==region ${{ secrets.AWS_REGION}} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry}}
+                    docker pull ${{ secrets.ECR_REPOSITORY}}:${{github.sha}}
+                    docker-compose -f docker-compose.prod.yml up -d --force-recreate server
+                    docker-compose -f docker-compose.prod.yml exec server python manage.py migrate --noinput
