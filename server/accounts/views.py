@@ -12,9 +12,19 @@ User = get_user_model()
 def csrf_token(request):
     return JsonResponse({"csrfToken": get_token(request)})
 
+def _data_from_request(request):
+    ctype = (request.META.get("CONTENT_TYPE") or "").split(";")[0].strip().lower()
+    if ctype == "application/json":
+        try:
+            return json.loads((request.body or b"").decode("utf-8") or "{}")
+        except json.JSONDecodeError:
+            return {}
+    # Fallback for form-encoded
+    return request.POST.dict()
+
 @require_http_methods(["POST"])
 def signup(request):
-    data = json.loads(request.body or "{}")
+    data = _data_from_request(request)
     email = data.get("email")
     username = data.get("username")
     password = data.get("password")
@@ -27,7 +37,7 @@ def signup(request):
 
 @require_http_methods(["POST"])
 def login_view(request):
-    data = json.loads(request.body or "{}")
+    data = _data_from_request(request)
     email = data.get("email")
     password = data.get("password")
     user = authenticate(request, username=email, password=password)

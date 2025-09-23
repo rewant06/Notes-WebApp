@@ -16,3 +16,13 @@ __pycache__/
 
 .next
 out
+
+# Infra and app-specific env files (keep secrets out of git)
+infra/*.env
+infra/**/*.env
+client/.env
+client/.env.*
+server/.env
+server/.env.*
+proxy/.env
+proxy/.env.*
