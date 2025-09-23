@@ -26,3 +26,7 @@ server/.env
 server/.env.*
 proxy/.env
 proxy/.env.*
+infra/backend.env
+infra/backend.env.*
+infra/frontend.env
+infra/frontend.env.*
